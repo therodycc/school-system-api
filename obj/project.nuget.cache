@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "3VscR0IW1Yca0lMPv/QPKsqzgHO90p3A47BmxA6nmXJGuT2eBS5s+gMSgSjLoZ51bCgRg3pMXSho9Y1ZZds2Qw==",
+  "success": true,
+  "projectFilePath": "/Users/macbookpro2017/Desktop/c#/school-system-api/school-system-api.csproj",
+  "expectedPackageFiles": [
+    "/Users/macbookpro2017/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/Users/macbookpro2017/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/macbookpro2017/.nuget/packages/swashbuckle.aspnetcore/6.5.0/swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "/Users/macbookpro2017/.nuget/packages/swashbuckle.aspnetcore.swagger/6.5.0/swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "/Users/macbookpro2017/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.5.0/swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "/Users/macbookpro2017/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
