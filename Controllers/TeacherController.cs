@@ -16,7 +16,7 @@ namespace school_system_api.Controllers
         public TeacherController(ITeacherRepository teacherRepository, IMapper mapper)
         {
             _teacherRepository = teacherRepository;
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
@@ -132,6 +132,19 @@ namespace school_system_api.Controllers
             return NoContent();
         }
 
+        [HttpGet("subject/{teacherId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Subject>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetSubjectsByTeacherId(int teacherId)
+        {
+            var subjects = _mapper.Map<List<SubjectDto>>(
+                _teacherRepository.GetSubjectsByTeacher(teacherId));
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(subjects);
+        }
 
     }
 }

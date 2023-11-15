@@ -50,5 +50,10 @@ namespace school_system_api.Repository
             _context.Update(teacher);
             return Save();
         }
+
+        public ICollection<Subject> GetSubjectsByTeacher(int teacherId)
+        {
+            return _context.TeacherSubjects.Where(e => e.TeacherId == teacherId).Select(c => c.Subject).ToList();
+        }
     }
 }
