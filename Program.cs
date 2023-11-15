@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using school_system_api;
 using school_system_api.data;
 using school_system_api.helpers;
+using school_system_api.interfaces;
+using school_system_api.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Configuration.AddUserSecrets<Program>();
 
