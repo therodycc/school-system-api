@@ -13,6 +13,9 @@ namespace school_system_api.Helpers
 
             CreateMap<SubjectDto, Subject>();
             CreateMap<Subject, SubjectDto>();
+
+            CreateMap<StudentDto, Student>();
+            CreateMap<Student, StudentDto>();
         }
     }
 }
