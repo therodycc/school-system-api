@@ -105,7 +105,7 @@ namespace school_system_api.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return NoContent();
+            return Ok("Successfully updated");
         }
 
         [HttpDelete("{teacherId}")]
@@ -129,7 +129,7 @@ namespace school_system_api.Controllers
                 ModelState.AddModelError("", "Something went wrong deleting teacher");
             }
 
-            return NoContent();
+            return Ok("Successfully deleted");
         }
 
         [HttpGet("subject/{teacherId}")]

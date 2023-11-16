@@ -16,7 +16,7 @@ namespace school_system_api.Controllers
         public ClassroomController(IClassroomRepository classroomRepository, IMapper mapper)
         {
             _classroomRepository = classroomRepository;
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); ;
         }
 
         [HttpGet]
@@ -105,7 +105,7 @@ namespace school_system_api.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return NoContent();
+            return Ok("Successfully updated");
         }
 
         [HttpDelete("{classroomId}")]
@@ -129,7 +129,7 @@ namespace school_system_api.Controllers
                 ModelState.AddModelError("", "Something went wrong deleting classroom");
             }
 
-            return NoContent();
+            return Ok("Successfully deleted");
         }
 
 
