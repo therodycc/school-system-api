@@ -11,12 +11,14 @@ namespace school_system_api.Controllers
     public class ClassroomController : Controller
     {
         private readonly IClassroomRepository _classroomRepository;
+        private readonly ITeacherRepository _teacherRepository;
         private readonly IMapper _mapper;
 
-        public ClassroomController(IClassroomRepository classroomRepository, IMapper mapper)
+        public ClassroomController(IClassroomRepository classroomRepository, IMapper mapper, ITeacherRepository teacherRepository)
         {
             _classroomRepository = classroomRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); ;
+            _teacherRepository = teacherRepository ?? throw new ArgumentNullException(nameof(teacherRepository));
         }
 
         [HttpGet]
@@ -114,10 +116,7 @@ namespace school_system_api.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteClassroom(int classroomId)
         {
-            if (!_classroomRepository.ClassroomExists(classroomId))
-            {
-                return NotFound();
-            }
+            if (!_classroomRepository.ClassroomExists(classroomId)) return NotFound();
 
             var classroomToDelete = _classroomRepository.GetClassroom(classroomId);
 
@@ -131,7 +130,28 @@ namespace school_system_api.Controllers
 
             return Ok("Successfully deleted");
         }
+        [HttpPut("{classroomId}/teacher")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult AssignTeacher(int classroomId, [FromBody] AssignTeacherToClassroomDto payload)
+        {
 
+            var classroom = _classroomRepository.GetClassroom(classroomId);
+            if (classroom == null) return NotFound("Classroom not found");
 
+            var teacher = _teacherRepository.GetTeacher(payload.TeacherId);
+            if (teacher == null) return NotFound("Teacher not found");
+
+            classroom.Teacher = teacher;
+
+            if (!_classroomRepository.UpdateClassroom(classroom))
+            {
+                ModelState.AddModelError("", "Something went wrong updating classroom");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Teacher assigned successfully");
+        }
     }
 }

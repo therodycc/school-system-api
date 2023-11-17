@@ -21,11 +21,15 @@ namespace school_system_api
                 var teacherSubjects = new List<TeacherSubject>()
                 {
                     new TeacherSubject() {
-                        Teacher = new Teacher() {  Name = "Jane", LastName = "Smith", Profession = "English Teacher", Email = "jane.smith@example.com" },
+                        Teacher = new Teacher() {  Name = "Jane", LastName = "Smith", Profession = "Educación", Email = "jane.smith@example.com" },
                         Subject = new Subject() {  Name = "Mathematics" },
                     },
                     new TeacherSubject {
                         Teacher = new Teacher() {  Name = "Marcus", LastName = "Doe", Profession = "Educación", Email = "Marcus.doe@example.com", },
+                        Subject = new Subject() {  Name = "Physical"},
+                    },
+                    new TeacherSubject {
+                        Teacher = new Teacher() {  Name = "Jenny", LastName = "Gonzalez", Profession = "Educación", Email = "jennygonzalez@example.com", },
                         Subject = new Subject() {  Name = "English"},
                     },
                 };
