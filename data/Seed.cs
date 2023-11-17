@@ -14,10 +14,17 @@ namespace school_system_api
 
         public void SeedDataContext()
         {
+            SeedStudents();
+            SeedClassrooms();
+            SeedUsers();
+            SeedTeacherSubject();
+            dataContext.SaveChanges();
+        }
+
+        private void SeedTeacherSubject()
+        {
             if (!dataContext.TeacherSubjects.Any())
             {
-                SeedStudents();
-                SeedClassrooms();
                 var teacherSubjects = new List<TeacherSubject>()
                 {
                     new TeacherSubject() {
@@ -35,13 +42,14 @@ namespace school_system_api
                 };
 
                 dataContext.TeacherSubjects.AddRange(teacherSubjects);
-                dataContext.SaveChanges();
             }
         }
 
         private void SeedStudents()
         {
-            var students = new List<Student>
+            if (!dataContext.Students.Any())
+            {
+                var students = new List<Student>
             {
                 new Student
                 {
@@ -64,12 +72,15 @@ namespace school_system_api
                     Address = "503 King St",
                 },
             };
-            dataContext.Students.AddRange(students);
+                dataContext.Students.AddRange(students);
+            }
         }
 
         private void SeedClassrooms()
         {
-            var classrooms = new List<Classroom>
+            if (!dataContext.Classrooms.Any())
+            {
+                var classrooms = new List<Classroom>
             {
                 new Classroom
                 {
@@ -85,7 +96,27 @@ namespace school_system_api
                 },
             };
 
-            dataContext.Classrooms.AddRange(classrooms);
+                dataContext.Classrooms.AddRange(classrooms);
+            }
+        }
+        private void SeedUsers()
+        {
+            if (!dataContext.Users.Any())
+            {
+                var users = new List<User>
+            {
+                new User
+                {
+                    FirstName = "Admin",
+                    LastName = "Test",
+                    Active = true,
+                    Email = "admin@example.com",
+                    Password = "$2b$10$lX4lIF5VysCR8emGBjn9qOc98ftL2iqN4xPy.KGzVH3WY27HMcsv.",
+                },
+            };
+
+                dataContext.Users.AddRange(users);
+            }
         }
     }
 
