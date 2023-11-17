@@ -55,5 +55,16 @@ namespace school_system_api.Repository
         {
             return _context.TeacherSubjects.Where(e => e.TeacherId == teacherId).Select(c => c.Subject).ToList();
         }
+
+        public bool RemoveAllTeacherSubjects(Teacher teacher)
+        {
+            var teacherSubjectsToRemove = _context.TeacherSubjects.Where(ts => teacher.Id == ts.TeacherId).ToList();
+            if (teacherSubjectsToRemove.Any())
+            {
+                _context.TeacherSubjects.RemoveRange(teacherSubjectsToRemove);
+                return Save();
+            }
+            return false;
+        }
     }
 }

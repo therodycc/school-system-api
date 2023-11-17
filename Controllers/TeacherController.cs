@@ -11,11 +11,13 @@ namespace school_system_api.Controllers
     public class TeacherController : Controller
     {
         private readonly ITeacherRepository _teacherRepository;
+        private readonly ISubjectRepository _subjectRepository;
         private readonly IMapper _mapper;
 
-        public TeacherController(ITeacherRepository teacherRepository, IMapper mapper)
+        public TeacherController(ITeacherRepository teacherRepository, IMapper mapper, ISubjectRepository subjectRepository)
         {
             _teacherRepository = teacherRepository;
+            _subjectRepository = subjectRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -115,9 +117,7 @@ namespace school_system_api.Controllers
         public IActionResult DeleteTeacher(int teacherId)
         {
             if (!_teacherRepository.TeacherExists(teacherId))
-            {
                 return NotFound();
-            }
 
             var teacherToDelete = _teacherRepository.GetTeacher(teacherId);
 
@@ -125,9 +125,7 @@ namespace school_system_api.Controllers
                 return BadRequest(ModelState);
 
             if (!_teacherRepository.DeleteTeacher(teacherToDelete))
-            {
                 ModelState.AddModelError("", "Something went wrong deleting teacher");
-            }
 
             return Ok("Successfully deleted");
         }
@@ -144,6 +142,58 @@ namespace school_system_api.Controllers
                 return BadRequest();
 
             return Ok(subjects);
+        }
+
+        [HttpPut("{teacherId}/subjects")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult AssignSubjectsToTeacher(int teacherId, [FromBody] List<SubjectsToTeacherDto> payload)
+        {
+            var teacher = _teacherRepository.GetTeacher(teacherId);
+
+            if (teacher == null)
+            {
+                return NotFound("Teacher not found");
+            }
+
+            _teacherRepository.RemoveAllTeacherSubjects(teacher);
+
+            var teacherSubjectsList = teacher.TeacherSubjects?.ToList();
+
+            foreach (var _sub in payload)
+            {
+
+                var subject = _subjectRepository.GetSubject(_sub.SubjectId);
+
+                if (subject == null)
+                {
+                    return NotFound($"Subject with ID {_sub.SubjectId} not found");
+                }
+
+                var teacherSubject = new TeacherSubject
+                {
+                    Teacher = teacher,
+                    Subject = subject
+                };
+
+                if (teacherSubjectsList == null)
+                {
+                    teacherSubjectsList = new List<TeacherSubject>();
+                }
+
+                teacherSubjectsList.Add(teacherSubject);
+            }
+
+            teacher.TeacherSubjects = teacherSubjectsList;
+
+            if (!_teacherRepository.UpdateTeacher(teacher))
+            {
+                ModelState.AddModelError("", "Something went wrong updating");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Subjects were assigned successfully");
         }
 
     }

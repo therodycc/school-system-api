@@ -10,6 +10,7 @@ namespace school_system_api.interfaces
         bool CreateTeacher(Teacher teacher);
         bool UpdateTeacher(Teacher teacher);
         bool DeleteTeacher(Teacher teacher);
+        bool RemoveAllTeacherSubjects(Teacher teacher);
         ICollection<Subject> GetSubjectsByTeacher(int teacherId);
         bool Save();
     }
