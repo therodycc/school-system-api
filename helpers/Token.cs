@@ -2,40 +2,61 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using school_system_api.config;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace school_system_api.Helpers
 {
     public class Token
     {
-        private readonly string SecretKey;
-        private readonly int ExpirationToken;
+        private readonly Config _config;
 
         public Token()
         {
-            var config = new Config();
-            SecretKey = config.SecretKey;
-            ExpirationToken = config.ExpirationToken;
+            _config = new Config();
         }
 
         public string SignInToken(string id)
         {
-            if (string.IsNullOrEmpty(SecretKey))
-                throw new InvalidOperationException("Secret key is not defined");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config.SecretKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("id", id) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
 
-            var claims = new[] { new Claim(SecretKey, id) };
+        public int? ValidateToken(string token)
+        {
+            if (token == null)
+                return null;
 
-            var key = new SymmetricSecurityKey(Convert.FromBase64String(SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config.SecretKey);
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
 
-            var token = new JwtSecurityToken(
-                issuer: "school_system",
-                audience: "your_audience",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(ExpirationToken),
-                signingCredentials: creds
-            );
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                return userId;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
