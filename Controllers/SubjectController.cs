@@ -26,7 +26,10 @@ namespace school_system_api.Controllers
             var subjects = _mapper.Map<List<SubjectDto>>(_subjectRepository.GetSubjects());
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                ModelState.AddModelError("error", "Error");
+                return StatusCode(400, ModelState);
+            }
 
             return Ok(subjects);
         }
@@ -42,7 +45,10 @@ namespace school_system_api.Controllers
             var subject = _mapper.Map<SubjectDto>(_subjectRepository.GetSubject(subjectId));
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                ModelState.AddModelError("error", "Error");
+                return StatusCode(400, ModelState);
+            }
 
             return Ok(subject);
         }
@@ -61,7 +67,7 @@ namespace school_system_api.Controllers
 
             if (subject != null)
             {
-                ModelState.AddModelError("", "Subject already exists");
+                ModelState.AddModelError("error", "Subject already exists");
                 return StatusCode(422, ModelState);
             }
 
@@ -72,11 +78,11 @@ namespace school_system_api.Controllers
 
             if (!_subjectRepository.CreateSubject(subjectMap))
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
+                ModelState.AddModelError("error", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok(new { message = "Successfully created" });
         }
 
         [HttpPut("{subjectId}")]
@@ -105,7 +111,7 @@ namespace school_system_api.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully updated");
+            return Ok(new { message = "Successfully updated" });
         }
 
         [HttpDelete("{subjectId}")]
@@ -129,7 +135,7 @@ namespace school_system_api.Controllers
                 ModelState.AddModelError("", "Something went wrong deleting subject");
             }
 
-            return Ok("Successfully deleted");
+            return Ok(new { message = "Successfully deleted" });
         }
 
 

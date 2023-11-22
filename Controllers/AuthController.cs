@@ -20,7 +20,7 @@ namespace school_system_api.Controllers
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        [HttpPost("/sign-in")]
+        [HttpPost("sign-in")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult SignIn([FromBody] AuthDto payload)
@@ -34,7 +34,7 @@ namespace school_system_api.Controllers
 
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid credentials");
+                ModelState.AddModelError("error", "Invalid credentials");
                 return StatusCode(401, ModelState);
             }
 
@@ -43,7 +43,7 @@ namespace school_system_api.Controllers
 
             if (!isPasswordValid)
             {
-                ModelState.AddModelError("", "Invalid credentials");
+                ModelState.AddModelError("error", "Invalid credentials");
                 return StatusCode(401, ModelState);
             }
 
@@ -52,14 +52,27 @@ namespace school_system_api.Controllers
 
             var config = new Config();
             var cookies = new Cookies();
+
             cookies.Set(Response, config.CookieName, token);
 
-            var data = new
+            return Ok(new
             {
                 ok = true,
                 token
-            };
-            return Ok(data);
+            });
+        }
+        [HttpPost("logout")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult Logout()
+        {
+            var config = new Config();
+            var cookies = new Cookies();
+
+            cookies.Clear(Response, config.CookieName);
+
+
+            return Ok(new { message = "Successfully done" });
         }
     }
 }

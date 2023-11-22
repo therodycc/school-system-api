@@ -4,11 +4,23 @@ using school_system_api.data;
 using school_system_api.helpers;
 using school_system_api.interfaces;
 using school_system_api.Repository;
+using school_system_api.Middlewares;
+
+const string CorsPolicy = "MyPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
+
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole();
+});
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<RequestDelegate>(provider => provider.GetRequiredService<RequestDelegate>());
+builder.Services.AddTransient<AuthMiddleware>();
 
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
@@ -27,13 +39,12 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-var _MyCors = "_MyCors";
-
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: _MyCors, builder =>
+    options.AddPolicy(name: CorsPolicy, builder =>
     {
-        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+        // builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+        builder.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -50,9 +61,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(_MyCors);
+
+app.UseCors(CorsPolicy);
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<AuthMiddleware>();
 
 app.UseAuthorization();
 

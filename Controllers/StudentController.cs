@@ -16,7 +16,7 @@ namespace school_system_api.Controllers
         public StudentController(IStudentRepository studentRepository, IMapper mapper)
         {
             _studentRepository = studentRepository;
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); ;
         }
 
         [HttpGet]
@@ -26,7 +26,10 @@ namespace school_system_api.Controllers
             var students = _mapper.Map<List<StudentDto>>(_studentRepository.GetStudents());
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                ModelState.AddModelError("error", "Error");
+                return StatusCode(400, ModelState);
+            }
 
             return Ok(students);
         }
@@ -42,7 +45,10 @@ namespace school_system_api.Controllers
             var student = _mapper.Map<StudentDto>(_studentRepository.GetStudent(studentId));
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                ModelState.AddModelError("error", "Error");
+                return StatusCode(400, ModelState);
+            }
 
             return Ok(student);
         }
@@ -61,7 +67,7 @@ namespace school_system_api.Controllers
 
             if (student != null)
             {
-                ModelState.AddModelError("", "Student already exists");
+                ModelState.AddModelError("error", "Student already exists");
                 return StatusCode(422, ModelState);
             }
 
@@ -72,11 +78,11 @@ namespace school_system_api.Controllers
 
             if (!_studentRepository.CreateStudent(studentMap))
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
+                ModelState.AddModelError("error", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok(new { message = "Successfully created" });
         }
 
         [HttpPut("{studentId}")]
@@ -101,11 +107,11 @@ namespace school_system_api.Controllers
 
             if (!_studentRepository.UpdateStudent(studentMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating student");
+                ModelState.AddModelError("error", "Something went wrong updating student");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully updated");
+            return Ok(new { message = "Successfully updated" });
         }
 
         [HttpDelete("{studentId}")]
@@ -126,10 +132,11 @@ namespace school_system_api.Controllers
 
             if (!_studentRepository.DeleteStudent(studentToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting student");
+                ModelState.AddModelError("error", "Something went wrong deleting student");
+                return StatusCode(400, ModelState);
             }
 
-            return Ok("Successfully deleted");
+            return Ok(new { message = "Successfully deleted" });
         }
 
 

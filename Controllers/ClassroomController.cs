@@ -28,7 +28,10 @@ namespace school_system_api.Controllers
             var classrooms = _mapper.Map<List<ClassroomDto>>(_classroomRepository.GetClassrooms());
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                ModelState.AddModelError("error", "Error");
+                return StatusCode(400, ModelState);
+            }
 
             return Ok(classrooms);
         }
@@ -63,7 +66,7 @@ namespace school_system_api.Controllers
 
             if (classroom != null)
             {
-                ModelState.AddModelError("", "Classroom already exists");
+                ModelState.AddModelError("error", "Classroom already exists");
                 return StatusCode(422, ModelState);
             }
 
@@ -74,11 +77,11 @@ namespace school_system_api.Controllers
 
             if (!_classroomRepository.CreateClassroom(classroomMap))
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
+                ModelState.AddModelError("error", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok(new { message = "Successfully created" });
         }
 
         [HttpPut("{classroomId}")]
@@ -103,11 +106,11 @@ namespace school_system_api.Controllers
 
             if (!_classroomRepository.UpdateClassroom(classroomMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating classroom");
+                ModelState.AddModelError("error", "Something went wrong updating classroom");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully updated");
+            return Ok(new { message = "Successfully updated" });
         }
 
         [HttpDelete("{classroomId}")]
@@ -125,10 +128,11 @@ namespace school_system_api.Controllers
 
             if (!_classroomRepository.DeleteClassroom(classroomToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting classroom");
+                ModelState.AddModelError("error", "Something went wrong deleting classroom");
+                return BadRequest(ModelState);
             }
 
-            return Ok("Successfully deleted");
+            return Ok(new { message = "Successfully deleted" });
         }
         [HttpPut("{classroomId}/teacher")]
         [ProducesResponseType(400)]
@@ -147,11 +151,11 @@ namespace school_system_api.Controllers
 
             if (!_classroomRepository.UpdateClassroom(classroom))
             {
-                ModelState.AddModelError("", "Something went wrong updating classroom");
+                ModelState.AddModelError("error", "Something went wrong updating classroom");
                 return BadRequest(ModelState);
             }
 
-            return Ok("Teacher assigned successfully");
+            return Ok(new { message = "Classroom assigned successfully" });
         }
     }
 }

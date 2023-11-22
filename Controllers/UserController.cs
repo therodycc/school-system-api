@@ -1,9 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using school_system_api.Dto;
 using school_system_api.Helpers;
 using school_system_api.interfaces;
 using school_system_api.models;
+using school_system_api.config;
 
 namespace school_system_api.Controllers
 {
@@ -48,6 +50,43 @@ namespace school_system_api.Controllers
             return Ok(user);
         }
 
+        [HttpGet("me")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetMe()
+        {
+            var httpContext = HttpContext;
+
+            if (httpContext.Items.TryGetValue("UserId", out object userIdObject))
+            {
+                if (userIdObject != null)
+                {
+                    if (int.TryParse(userIdObject.ToString(), out int userId))
+                    {
+                        if (!_userRepository.UserExists(userId))
+                            return NotFound();
+
+                        var user = _mapper.Map<UserDto>(_userRepository.GetUser(userId));
+
+                        if (!ModelState.IsValid)
+                            return BadRequest(ModelState);
+
+                        return Ok(user);
+                    }
+                    else
+                    {
+                        return BadRequest("Invalid UserId format");
+                    }
+                }
+                else
+                {
+                    return BadRequest("UserId is null");
+                }
+            }
+
+            return BadRequest(ModelState);
+        }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -71,7 +110,7 @@ namespace school_system_api.Controllers
 
             var userMap = _mapper.Map<User>(userCreate);
 
-            var encrypt = new Encrypt(); 
+            var encrypt = new Encrypt();
             userMap.Password = encrypt.HashPassword(userCreate.Password);
 
             if (!_userRepository.CreateUser(userMap))
@@ -80,7 +119,7 @@ namespace school_system_api.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok(new { message = "Successfully created" });
         }
 
         [HttpPut("{userId}")]
@@ -109,7 +148,7 @@ namespace school_system_api.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully updated");
+            return Ok(new { message = "Successfully updated" });
         }
 
         [HttpDelete("{userId}")]
@@ -133,7 +172,7 @@ namespace school_system_api.Controllers
                 ModelState.AddModelError("", "Something went wrong deleting user");
             }
 
-            return Ok("Successfully deleted");
+            return Ok(new { message = "Successfully deleted" });
         }
 
 

@@ -4,12 +4,11 @@ namespace school_system_api.Helpers
 {
     public class Cookies
     {
-        private readonly string Domain;
+        private readonly Config _config;
 
         public Cookies()
         {
-            var config = new Config();
-            Domain = config.Domain;
+            _config = new Config();
         }
 
         public string Get(HttpRequest req, string name)
@@ -34,7 +33,7 @@ namespace school_system_api.Helpers
                     MaxAge = TimeSpan.FromDays(1),
                     SameSite = SameSiteMode.Lax,
                     Secure = false,
-                    Domain = Domain,
+                    Domain = _config.Domain,
                 }
             );
         }
@@ -45,10 +44,10 @@ namespace school_system_api.Helpers
                 name,
                 new CookieOptions
                 {
-                    Domain = Domain,
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Lax,
                     Secure = false,
+                    Domain = _config.Domain,
+                    HttpOnly = false,
+                    SameSite = SameSiteMode.Lax,
                     Expires = DateTimeOffset.MinValue,
                 }
             );
