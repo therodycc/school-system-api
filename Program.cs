@@ -43,10 +43,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: CorsPolicy, builder =>
     {
-        // builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
-        builder.AllowAnyOrigin()
+        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
