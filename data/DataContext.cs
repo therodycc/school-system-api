@@ -14,6 +14,7 @@ namespace school_system_api.data
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<TeacherSubject> TeacherSubjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

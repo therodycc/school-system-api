@@ -56,6 +56,28 @@ namespace school_system_api.Migrations
                     b.ToTable("Classrooms");
                 });
 
+            modelBuilder.Entity("school_system_api.models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("school_system_api.models.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -208,10 +230,15 @@ namespace school_system_api.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -242,6 +269,20 @@ namespace school_system_api.Migrations
                     b.Navigation("Subject");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("school_system_api.models.User", b =>
+                {
+                    b.HasOne("school_system_api.models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("school_system_api.models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("school_system_api.models.Subject", b =>

@@ -32,7 +32,7 @@ namespace school_system_api.Helpers
                 {
                     MaxAge = TimeSpan.FromDays(1),
                     SameSite = SameSiteMode.Lax,
-                    Secure = false,
+                    Secure = true,
                     Domain = _config.Domain,
                 }
             );
@@ -44,10 +44,9 @@ namespace school_system_api.Helpers
                 name,
                 new CookieOptions
                 {
-                    Secure = false,
                     Domain = _config.Domain,
-                    HttpOnly = false,
                     SameSite = SameSiteMode.Lax,
+                    Secure = true,
                     Expires = DateTimeOffset.MinValue,
                 }
             );

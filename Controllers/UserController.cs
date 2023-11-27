@@ -13,12 +13,14 @@ namespace school_system_api.Controllers
     [ApiController]
     public class UserController : Controller
     {
+        private readonly ILogger<UserController> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
+            _logger = logger;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); ;
         }
 
@@ -57,35 +59,29 @@ namespace school_system_api.Controllers
         {
             var httpContext = HttpContext;
 
-            if (httpContext.Items.TryGetValue("UserId", out object userIdObject))
+            if (HttpContext.Items.TryGetValue("UserId", out var userIdObject) && userIdObject is int userId)
             {
-                if (userIdObject != null)
+                _logger.LogInformation(userId.ToString());
+
+                if (!_userRepository.UserExists(userId))
+                    return NotFound();
+
+                var user = _mapper.Map<UserDto>(_userRepository.GetUser(userId));
+
+                if (!ModelState.IsValid)
                 {
-                    if (int.TryParse(userIdObject.ToString(), out int userId))
-                    {
-                        if (!_userRepository.UserExists(userId))
-                            return NotFound();
-
-                        var user = _mapper.Map<UserDto>(_userRepository.GetUser(userId));
-
-                        if (!ModelState.IsValid)
-                            return BadRequest(ModelState);
-
-                        return Ok(user);
-                    }
-                    else
-                    {
-                        return BadRequest("Invalid UserId format");
-                    }
+                    return BadRequest(ModelState);
                 }
-                else
-                {
-                    return BadRequest("UserId is null");
-                }
+
+                return Ok(user);
             }
 
-            return BadRequest(ModelState);
+
+            ModelState.AddModelError("error", "Something went wrong");
+            return StatusCode(500, ModelState);
+
         }
+
 
         [HttpPost]
         [ProducesResponseType(204)]
@@ -174,7 +170,5 @@ namespace school_system_api.Controllers
 
             return Ok(new { message = "Successfully deleted" });
         }
-
-
     }
 }

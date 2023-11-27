@@ -12,8 +12,8 @@ using school_system_api.data;
 namespace school_system_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231114001056_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231124022252_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,28 @@ namespace school_system_api.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Classrooms");
+                });
+
+            modelBuilder.Entity("school_system_api.models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("school_system_api.models.Student", b =>
@@ -185,6 +207,45 @@ namespace school_system_api.Migrations
                     b.ToTable("TeacherSubjects");
                 });
 
+            modelBuilder.Entity("school_system_api.models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("school_system_api.models.Classroom", b =>
                 {
                     b.HasOne("school_system_api.models.Teacher", "Teacher")
@@ -211,6 +272,20 @@ namespace school_system_api.Migrations
                     b.Navigation("Subject");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("school_system_api.models.User", b =>
+                {
+                    b.HasOne("school_system_api.models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("school_system_api.models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("school_system_api.models.Subject", b =>

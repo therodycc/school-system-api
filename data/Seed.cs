@@ -1,5 +1,6 @@
 using school_system_api.data;
 using school_system_api.models;
+using school_system_api.Enum;
 
 namespace school_system_api
 {
@@ -16,6 +17,7 @@ namespace school_system_api
         {
             SeedStudents();
             SeedClassrooms();
+            SeedRoles();
             SeedUsers();
             SeedTeacherSubject();
             dataContext.SaveChanges();
@@ -99,6 +101,25 @@ namespace school_system_api
                 dataContext.Classrooms.AddRange(classrooms);
             }
         }
+        private void SeedRoles()
+        {
+            if (!dataContext.Roles.Any())
+            {
+                var roles = new List<Role>
+            {
+                new Role
+                {
+                    Name = RoleTypes.Admin
+                },
+                new Role
+                {
+                    Name = RoleTypes.User
+                },
+            };
+
+                dataContext.Roles.AddRange(roles);
+            }
+        }
         private void SeedUsers()
         {
             if (!dataContext.Users.Any())
@@ -112,6 +133,7 @@ namespace school_system_api
                     Active = true,
                     Email = "admin@example.com",
                     Password = "$2b$10$lX4lIF5VysCR8emGBjn9qOc98ftL2iqN4xPy.KGzVH3WY27HMcsv.",
+                    RoleId = 1
                 },
             };
 
