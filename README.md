@@ -2,6 +2,9 @@
 
 ![image](https://github.com/therodycc/school-system-api/assets/72664020/6fcfae7f-eaa4-4d14-a883-7f64969c4b21)
 
+### Video using the api with swagger
+https://drive.google.com/file/d/1CW8uOD7mGkxxuusa4eqT-hj0SQrb_EBz/view?usp=sharing
+
 ## Versión
 
 ```bash
