@@ -1,6 +1,7 @@
 # school-system-api
 
-![image](https://github.com/therodycc/school-system-api/assets/72664020/6fcfae7f-eaa4-4d14-a883-7f64969c4b21)
+![School System](https://github.com/therodycc/school-system-api/assets/72664020/d99c30c0-c4b3-4cb1-963a-dbf5436d04d0)
+
 
 ### Video using the api with swagger
 https://drive.google.com/file/d/1CW8uOD7mGkxxuusa4eqT-hj0SQrb_EBz/view?usp=sharing
