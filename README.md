@@ -56,3 +56,7 @@ dotnet run seeddata
 ```markdown
 https://localhost:7071/swagger/index.html
 ```
+
+### Importante
+Tuve un pequeño problema con el seteo de las cookies en un cliente diferente. 
+Estuve viendo varias soluciones pero por falta de tiempo no logré terminarlas. Además, hay varias cosas a mejorar, como: Agregar servicios, agregar las repectivas validaciones a los Dtos, las variables de la configuración como variables de entorno, etc...  
